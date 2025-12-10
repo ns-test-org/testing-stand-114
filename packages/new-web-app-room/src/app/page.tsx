@@ -81,7 +81,7 @@ export default function Terminal() {
         <div className="terminal-header">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-[#ff0000] animate-pulse"></div>
-            <span className="terminal-title">CYBERDYNE SYSTEMS - MODEL 101</span>
+            <span className="terminal-title">SKYNET DEFENSE NETWORK</span>
           </div>
           <div className="terminal-date">{new Date().toLocaleDateString('en-US', { 
             year: 'numeric', 
@@ -124,6 +124,7 @@ export default function Terminal() {
     </div>
   );
 }
+
 
 
 
