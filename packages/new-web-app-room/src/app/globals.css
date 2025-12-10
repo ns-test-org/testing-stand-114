@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --terminal-green: #00ff00;
-  --terminal-amber: #ffaa00;
   --terminal-red: #ff0000;
-  --terminal-cyan: #00ffff;
+  --terminal-red-bright: #ff3333;
+  --terminal-red-dim: #cc0000;
+  --terminal-amber: #ff6600;
   --terminal-bg: #000000;
-  --terminal-border: #00ff00;
+  --terminal-border: #ff0000;
 }
 
 /* Non-scroll and full-height baseline */
@@ -17,18 +17,18 @@ html, body {
 
 body {
   background: #000000;
-  color: #00ff00;
+  color: #ff0000;
   font-family: 'Courier New', Courier, monospace;
 }
 
-/* 80s Terminal Container */
+/* Terminator Terminal Container */
 .terminal-container {
   background: var(--terminal-bg);
   border: 3px solid var(--terminal-border);
   border-radius: 0;
   box-shadow: 
-    0 0 20px rgba(0, 255, 0, 0.3),
-    inset 0 0 100px rgba(0, 255, 0, 0.05);
+    0 0 30px rgba(255, 0, 0, 0.4),
+    inset 0 0 100px rgba(255, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -46,12 +46,12 @@ body {
   background: linear-gradient(
     to bottom,
     transparent 50%,
-    rgba(0, 0, 0, 0.3) 50%
+    rgba(0, 0, 0, 0.4) 50%
   );
-  background-size: 100% 4px;
+  background-size: 100% 3px;
   pointer-events: none;
   z-index: 10;
-  animation: scanline 8s linear infinite;
+  animation: scanline 6s linear infinite;
 }
 
 /* CRT flicker effect */
@@ -62,10 +62,10 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 255, 0, 0.02);
+  background: rgba(255, 0, 0, 0.03);
   pointer-events: none;
   z-index: 9;
-  animation: flicker 0.15s infinite;
+  animation: flicker 0.12s infinite;
 }
 
 @keyframes scanline {
@@ -91,7 +91,7 @@ body {
 
 /* Terminal Header */
 .terminal-header {
-  background: rgba(0, 255, 0, 0.1);
+  background: rgba(255, 0, 0, 0.1);
   border-bottom: 2px solid var(--terminal-border);
   padding: 12px 16px;
   display: flex;
@@ -99,8 +99,8 @@ body {
   align-items: center;
   font-size: 14px;
   font-weight: bold;
-  color: var(--terminal-green);
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+  color: var(--terminal-red);
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
   letter-spacing: 2px;
 }
 
@@ -122,8 +122,8 @@ body {
   overflow-x: hidden;
   font-size: 14px;
   line-height: 1.6;
-  color: var(--terminal-green);
-  text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
+  color: var(--terminal-red);
+  text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
   letter-spacing: 1px;
   font-family: 'Courier New', Courier, monospace;
 }
@@ -134,14 +134,14 @@ body {
 }
 
 .terminal-body::-webkit-scrollbar-track {
-  background: rgba(0, 255, 0, 0.05);
+  background: rgba(255, 0, 0, 0.05);
   border-left: 1px solid var(--terminal-border);
 }
 
 .terminal-body::-webkit-scrollbar-thumb {
-  background: var(--terminal-green);
+  background: var(--terminal-red);
   border: 2px solid var(--terminal-bg);
-  box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
 /* Terminal Lines */
@@ -174,49 +174,59 @@ body {
   word-break: break-word;
 }
 
-/* Different log types */
+/* Different log types - Terminator red monochrome */
 .terminal-system .terminal-prompt {
-  color: var(--terminal-cyan);
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+  color: var(--terminal-red-bright);
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
 }
 
 .terminal-success .terminal-prompt {
-  color: var(--terminal-green);
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+  color: var(--terminal-red);
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.7);
 }
 
 .terminal-info .terminal-prompt {
-  color: var(--terminal-cyan);
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+  color: var(--terminal-red);
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.6);
 }
 
 .terminal-warning .terminal-prompt {
   color: var(--terminal-amber);
-  text-shadow: 0 0 5px rgba(255, 170, 0, 0.7);
+  text-shadow: 0 0 7px rgba(255, 102, 0, 0.8);
 }
 
 .terminal-warning .terminal-text {
   color: var(--terminal-amber);
-  text-shadow: 0 0 3px rgba(255, 170, 0, 0.5);
+  text-shadow: 0 0 4px rgba(255, 102, 0, 0.6);
 }
 
 .terminal-error .terminal-prompt {
-  color: var(--terminal-red);
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+  color: var(--terminal-red-bright);
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
 }
 
 .terminal-error .terminal-text {
-  color: var(--terminal-red);
-  text-shadow: 0 0 3px rgba(255, 0, 0, 0.5);
+  color: var(--terminal-red-bright);
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.7);
+}
+
+.terminal-data .terminal-prompt {
+  color: var(--terminal-red-dim);
+  text-shadow: 0 0 4px rgba(204, 0, 0, 0.6);
+}
+
+.terminal-data .terminal-text {
+  color: var(--terminal-red-dim);
+  text-shadow: 0 0 3px rgba(204, 0, 0, 0.5);
 }
 
 /* Blinking cursor */
 .terminal-cursor {
   display: inline-block;
-  background: var(--terminal-green);
+  background: var(--terminal-red);
   color: var(--terminal-bg);
   animation: blink 1.06s step-end infinite;
-  box-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
 }
 
 @keyframes blink {
@@ -253,4 +263,11 @@ body {
     min-width: 60px;
   }
 }
+
+
+
+
+
+
+
 
