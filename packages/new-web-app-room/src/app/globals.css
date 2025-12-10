@@ -35,7 +35,7 @@ body {
   position: relative;
 }
 
-/* Scanline effect */
+/* Scanline effect - more visible */
 .terminal-container::before {
   content: '';
   position: absolute;
@@ -43,18 +43,21 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
+  background: repeating-linear-gradient(
     to bottom,
-    transparent 50%,
-    rgba(0, 0, 0, 0.4) 50%
+    transparent 0px,
+    transparent 1px,
+    rgba(0, 0, 0, 0.5) 1px,
+    rgba(0, 0, 0, 0.5) 2px
   );
-  background-size: 100% 3px;
+  background-size: 100% 4px;
   pointer-events: none;
   z-index: 10;
-  animation: scanline 6s linear infinite;
+  animation: scanline 8s linear infinite;
+  opacity: 0.6;
 }
 
-/* CRT flicker effect */
+/* CRT flicker and vignette effect */
 .terminal-container::after {
   content: '';
   position: absolute;
@@ -62,10 +65,12 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 0, 0, 0.03);
+  background: 
+    radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.7) 100%),
+    rgba(255, 0, 0, 0.03);
   pointer-events: none;
   z-index: 9;
-  animation: flicker 0.12s infinite;
+  animation: flicker 0.15s infinite;
 }
 
 @keyframes scanline {
@@ -79,13 +84,37 @@ body {
 
 @keyframes flicker {
   0% {
-    opacity: 0.95;
+    opacity: 0.92;
   }
-  50% {
+  10% {
+    opacity: 0.98;
+  }
+  20% {
+    opacity: 0.94;
+  }
+  30% {
     opacity: 1;
   }
-  100% {
+  40% {
+    opacity: 0.96;
+  }
+  50% {
+    opacity: 0.93;
+  }
+  60% {
+    opacity: 0.99;
+  }
+  70% {
     opacity: 0.95;
+  }
+  80% {
+    opacity: 0.97;
+  }
+  90% {
+    opacity: 0.94;
+  }
+  100% {
+    opacity: 0.92;
   }
 }
 
@@ -123,9 +152,13 @@ body {
   font-size: 14px;
   line-height: 1.6;
   color: var(--terminal-red);
-  text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
+  text-shadow: 
+    0 0 5px rgba(255, 0, 0, 0.8),
+    0 0 10px rgba(255, 0, 0, 0.4),
+    0 0 15px rgba(255, 0, 0, 0.2);
   letter-spacing: 1px;
   font-family: 'Courier New', Courier, monospace;
+  filter: contrast(1.1) brightness(1.05);
 }
 
 /* Custom scrollbar */
@@ -174,59 +207,85 @@ body {
   word-break: break-word;
 }
 
-/* Different log types - Terminator red monochrome */
+/* Different log types - Enhanced glow effects */
 .terminal-system .terminal-prompt {
   color: var(--terminal-red-bright);
-  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
+  text-shadow: 
+    0 0 8px rgba(255, 51, 51, 1),
+    0 0 15px rgba(255, 51, 51, 0.6),
+    0 0 25px rgba(255, 51, 51, 0.3);
 }
 
 .terminal-success .terminal-prompt {
   color: var(--terminal-red);
-  text-shadow: 0 0 6px rgba(255, 0, 0, 0.7);
+  text-shadow: 
+    0 0 6px rgba(255, 0, 0, 0.9),
+    0 0 12px rgba(255, 0, 0, 0.5),
+    0 0 20px rgba(255, 0, 0, 0.3);
 }
 
 .terminal-info .terminal-prompt {
   color: var(--terminal-red);
-  text-shadow: 0 0 5px rgba(255, 0, 0, 0.6);
+  text-shadow: 
+    0 0 5px rgba(255, 0, 0, 0.8),
+    0 0 10px rgba(255, 0, 0, 0.4);
 }
 
 .terminal-warning .terminal-prompt {
   color: var(--terminal-amber);
-  text-shadow: 0 0 7px rgba(255, 102, 0, 0.8);
+  text-shadow: 
+    0 0 7px rgba(255, 102, 0, 1),
+    0 0 14px rgba(255, 102, 0, 0.6),
+    0 0 22px rgba(255, 102, 0, 0.3);
 }
 
 .terminal-warning .terminal-text {
   color: var(--terminal-amber);
-  text-shadow: 0 0 4px rgba(255, 102, 0, 0.6);
+  text-shadow: 
+    0 0 4px rgba(255, 102, 0, 0.8),
+    0 0 8px rgba(255, 102, 0, 0.4);
 }
 
 .terminal-error .terminal-prompt {
   color: var(--terminal-red-bright);
-  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
+  text-shadow: 
+    0 0 8px rgba(255, 51, 51, 1),
+    0 0 16px rgba(255, 51, 51, 0.6),
+    0 0 24px rgba(255, 51, 51, 0.3);
 }
 
 .terminal-error .terminal-text {
   color: var(--terminal-red-bright);
-  text-shadow: 0 0 5px rgba(255, 51, 51, 0.7);
+  text-shadow: 
+    0 0 5px rgba(255, 51, 51, 0.9),
+    0 0 10px rgba(255, 51, 51, 0.5);
 }
 
 .terminal-data .terminal-prompt {
   color: var(--terminal-red-dim);
-  text-shadow: 0 0 4px rgba(204, 0, 0, 0.6);
+  text-shadow: 
+    0 0 4px rgba(204, 0, 0, 0.8),
+    0 0 8px rgba(204, 0, 0, 0.4);
 }
 
 .terminal-data .terminal-text {
   color: var(--terminal-red-dim);
-  text-shadow: 0 0 3px rgba(204, 0, 0, 0.5);
+  text-shadow: 
+    0 0 3px rgba(204, 0, 0, 0.7),
+    0 0 6px rgba(204, 0, 0, 0.3);
 }
 
-/* Blinking cursor */
+/* Blinking cursor with glow */
 .terminal-cursor {
   display: inline-block;
   background: var(--terminal-red);
   color: var(--terminal-bg);
   animation: blink 1.06s step-end infinite;
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+  box-shadow: 
+    0 0 10px rgba(255, 0, 0, 1),
+    0 0 20px rgba(255, 0, 0, 0.6),
+    0 0 30px rgba(255, 0, 0, 0.3);
+  filter: brightness(1.2);
 }
 
 @keyframes blink {
@@ -336,6 +395,7 @@ body {
     min-width: 60px;
   }
 }
+
 
 
 
