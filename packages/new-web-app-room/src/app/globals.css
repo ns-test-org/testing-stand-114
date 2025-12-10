@@ -4,9 +4,11 @@
   --terminal-red: #ff0000;
   --terminal-red-bright: #ff3333;
   --terminal-red-dim: #cc0000;
+  --terminal-red-dark: #990000;
   --terminal-amber: #ff6600;
   --terminal-bg: #000000;
   --terminal-border: #ff0000;
+  --glow-intensity: 0.8;
 }
 
 /* Non-scroll and full-height baseline */
@@ -21,21 +23,35 @@ body {
   font-family: 'Courier New', Courier, monospace;
 }
 
+/* Red vignette overlay for authentic Terminator vision */
+.red-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 0, 0, 0.1) 70%,
+    rgba(255, 0, 0, 0.3) 100%
+  );
+  z-index: 1;
+}
+
 /* Terminator Terminal Container */
 .terminal-container {
   background: var(--terminal-bg);
   border: 3px solid var(--terminal-border);
   border-radius: 0;
   box-shadow: 
-    0 0 30px rgba(255, 0, 0, 0.4),
-    inset 0 0 100px rgba(255, 0, 0, 0.08);
+    0 0 40px rgba(255, 0, 0, 0.5),
+    0 0 80px rgba(255, 0, 0, 0.3),
+    inset 0 0 120px rgba(255, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  z-index: 2;
 }
 
-/* Scanline effect */
+/* Authentic CRT scanline effect */
 .terminal-container::before {
   content: '';
   position: absolute;
@@ -43,18 +59,19 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
+  background: repeating-linear-gradient(
     to bottom,
-    transparent 50%,
-    rgba(0, 0, 0, 0.4) 50%
+    transparent 0px,
+    transparent 1px,
+    rgba(0, 0, 0, 0.5) 1px,
+    rgba(0, 0, 0, 0.5) 2px
   );
-  background-size: 100% 3px;
   pointer-events: none;
   z-index: 10;
-  animation: scanline 6s linear infinite;
+  animation: scanline 8s linear infinite;
 }
 
-/* CRT flicker effect */
+/* CRT phosphor glow and flicker */
 .terminal-container::after {
   content: '';
   position: absolute;
@@ -62,15 +79,15 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 0, 0, 0.03);
+  background: rgba(255, 0, 0, 0.04);
   pointer-events: none;
   z-index: 9;
-  animation: flicker 0.12s infinite;
+  animation: flicker 0.15s infinite, phosphorGlow 3s ease-in-out infinite;
 }
 
 @keyframes scanline {
   0% {
-    transform: translateY(0);
+    transform: translateY(-100%);
   }
   100% {
     transform: translateY(100%);
@@ -79,53 +96,93 @@ body {
 
 @keyframes flicker {
   0% {
-    opacity: 0.95;
+    opacity: 0.92;
+  }
+  25% {
+    opacity: 0.98;
   }
   50% {
     opacity: 1;
   }
+  75% {
+    opacity: 0.96;
+  }
   100% {
-    opacity: 0.95;
+    opacity: 0.92;
+  }
+}
+
+@keyframes phosphorGlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
   }
 }
 
 /* Terminal Header */
 .terminal-header {
-  background: rgba(255, 0, 0, 0.1);
+  background: rgba(255, 0, 0, 0.12);
   border-bottom: 2px solid var(--terminal-border);
-  padding: 12px 16px;
+  padding: 14px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
   font-weight: bold;
   color: var(--terminal-red);
-  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+  text-shadow: 0 0 10px rgba(255, 0, 0, var(--glow-intensity));
   letter-spacing: 2px;
+  position: relative;
+}
+
+.terminal-header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--terminal-red);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
 }
 
 .terminal-title {
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.terminal-status {
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 4px 10px;
+  border: 1px solid var(--terminal-red);
+  background: rgba(255, 0, 0, 0.1);
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
 }
 
 .terminal-date {
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: 11px;
+  opacity: 0.9;
+  letter-spacing: 1.5px;
 }
 
 /* Terminal Body */
 .terminal-body {
   flex: 1;
-  padding: 20px;
+  padding: 24px;
   overflow-y: auto;
   overflow-x: hidden;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.7;
   color: var(--terminal-red);
-  text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
-  letter-spacing: 1px;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+  letter-spacing: 1.2px;
   font-family: 'Courier New', Courier, monospace;
+  font-weight: 500;
 }
 
 /* Custom scrollbar */
@@ -147,15 +204,15 @@ body {
 /* Terminal Lines */
 .terminal-line {
   display: flex;
-  gap: 12px;
-  margin-bottom: 4px;
-  animation: fadeIn 0.2s ease-in;
+  gap: 14px;
+  margin-bottom: 5px;
+  animation: fadeIn 0.15s ease-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateX(-8px);
   }
   to {
     opacity: 1;
@@ -164,69 +221,112 @@ body {
 }
 
 .terminal-prompt {
-  font-weight: bold;
+  font-weight: 900;
   flex-shrink: 0;
-  min-width: 70px;
+  min-width: 65px;
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.8);
 }
 
 .terminal-text {
   flex: 1;
   word-break: break-word;
+  font-weight: 500;
 }
 
-/* Different log types - Terminator red monochrome */
+/* Different log types - Authentic Terminator red monochrome */
 .terminal-system .terminal-prompt {
   color: var(--terminal-red-bright);
-  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
+  text-shadow: 0 0 10px rgba(255, 51, 51, 1), 0 0 20px rgba(255, 0, 0, 0.5);
+  font-weight: 900;
+}
+
+.terminal-system .terminal-text {
+  color: var(--terminal-red-bright);
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.8);
+  font-weight: 700;
 }
 
 .terminal-success .terminal-prompt {
   color: var(--terminal-red);
-  text-shadow: 0 0 6px rgba(255, 0, 0, 0.7);
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
 }
 
-.terminal-info .terminal-prompt {
+.terminal-success .terminal-text {
   color: var(--terminal-red);
   text-shadow: 0 0 5px rgba(255, 0, 0, 0.6);
 }
 
+.terminal-info .terminal-prompt {
+  color: var(--terminal-red);
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.7);
+}
+
+.terminal-info .terminal-text {
+  color: var(--terminal-red);
+  text-shadow: 0 0 4px rgba(255, 0, 0, 0.5);
+}
+
 .terminal-warning .terminal-prompt {
   color: var(--terminal-amber);
-  text-shadow: 0 0 7px rgba(255, 102, 0, 0.8);
+  text-shadow: 0 0 10px rgba(255, 102, 0, 0.9), 0 0 20px rgba(255, 102, 0, 0.5);
+  animation: warningPulse 1.5s ease-in-out infinite;
 }
 
 .terminal-warning .terminal-text {
   color: var(--terminal-amber);
-  text-shadow: 0 0 4px rgba(255, 102, 0, 0.6);
+  text-shadow: 0 0 6px rgba(255, 102, 0, 0.7);
+  font-weight: 600;
+}
+
+@keyframes warningPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .terminal-error .terminal-prompt {
   color: var(--terminal-red-bright);
-  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
+  text-shadow: 0 0 12px rgba(255, 51, 51, 1), 0 0 24px rgba(255, 0, 0, 0.6);
+  animation: errorFlash 0.5s ease-in-out infinite;
 }
 
 .terminal-error .terminal-text {
   color: var(--terminal-red-bright);
-  text-shadow: 0 0 5px rgba(255, 51, 51, 0.7);
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.8);
+  font-weight: 700;
+}
+
+@keyframes errorFlash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .terminal-data .terminal-prompt {
   color: var(--terminal-red-dim);
-  text-shadow: 0 0 4px rgba(204, 0, 0, 0.6);
+  text-shadow: 0 0 5px rgba(204, 0, 0, 0.7);
 }
 
 .terminal-data .terminal-text {
   color: var(--terminal-red-dim);
-  text-shadow: 0 0 3px rgba(204, 0, 0, 0.5);
+  text-shadow: 0 0 4px rgba(204, 0, 0, 0.6);
+  font-family: 'Courier New', monospace;
 }
 
-/* Blinking cursor */
+/* Blinking cursor - authentic Terminator style */
 .terminal-cursor {
   display: inline-block;
   background: var(--terminal-red);
   color: var(--terminal-bg);
-  animation: blink 1.06s step-end infinite;
-  box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+  animation: blink 1s step-end infinite;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.9), 0 0 20px rgba(255, 0, 0, 0.5);
+  padding: 0 2px;
 }
 
 @keyframes blink {
@@ -238,89 +338,168 @@ body {
   }
 }
 
-/* Combat Static Interference Effect */
+/* Combat Static Interference Effect - Authentic damage simulation */
 .static-interference {
-  animation: staticGlitch 0.15s steps(2, end) infinite;
+  animation: staticGlitch 0.1s steps(3, end) infinite;
 }
 
 .static-interference::before {
-  animation: staticScanline 0.08s linear infinite;
+  animation: staticScanline 0.05s linear infinite;
+  opacity: 0.6;
 }
 
 .static-interference::after {
-  background: rgba(255, 0, 0, 0.15);
-  animation: staticFlicker 0.05s infinite;
+  background: rgba(255, 0, 0, 0.2);
+  animation: staticFlicker 0.04s infinite;
 }
 
 .static-interference .terminal-body {
-  animation: staticShake 0.1s infinite;
+  animation: staticShake 0.08s infinite;
+  filter: brightness(1.3) contrast(1.4);
 }
 
 @keyframes staticGlitch {
   0% {
     transform: translate(0);
-    filter: brightness(1.2) contrast(1.3);
+    filter: brightness(1.3) contrast(1.4) hue-rotate(0deg);
   }
-  25% {
-    transform: translate(-2px, 2px);
-    filter: brightness(0.8) contrast(1.5);
+  20% {
+    transform: translate(-3px, 2px);
+    filter: brightness(0.7) contrast(1.6) hue-rotate(5deg);
   }
-  50% {
-    transform: translate(2px, -2px);
-    filter: brightness(1.4) contrast(1.2);
+  40% {
+    transform: translate(3px, -3px);
+    filter: brightness(1.5) contrast(1.3) hue-rotate(-5deg);
   }
-  75% {
-    transform: translate(-1px, -1px);
-    filter: brightness(0.9) contrast(1.4);
+  60% {
+    transform: translate(-2px, -2px);
+    filter: brightness(0.9) contrast(1.5) hue-rotate(3deg);
+  }
+  80% {
+    transform: translate(2px, 3px);
+    filter: brightness(1.2) contrast(1.4) hue-rotate(-3deg);
   }
   100% {
-    transform: translate(1px, 1px);
-    filter: brightness(1.1) contrast(1.3);
+    transform: translate(0);
+    filter: brightness(1.1) contrast(1.4) hue-rotate(0deg);
   }
 }
 
 @keyframes staticScanline {
   0% {
     background-position: 0 0;
-    opacity: 0.8;
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
   }
   100% {
     background-position: 0 100%;
-    opacity: 1;
+    opacity: 0.7;
   }
 }
 
 @keyframes staticFlicker {
   0%, 100% {
-    opacity: 0.9;
+    opacity: 0.8;
+  }
+  25% {
+    opacity: 0.2;
   }
   50% {
-    opacity: 0.3;
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.4;
   }
 }
 
 @keyframes staticShake {
   0%, 100% {
-    transform: translateX(0);
+    transform: translateX(0) translateY(0);
   }
-  25% {
-    transform: translateX(-3px);
+  20% {
+    transform: translateX(-4px) translateY(2px);
   }
-  75% {
-    transform: translateX(3px);
+  40% {
+    transform: translateX(4px) translateY(-2px);
   }
+  60% {
+    transform: translateX(-3px) translateY(-3px);
+  }
+  80% {
+    transform: translateX(3px) translateY(3px);
+  }
+}
+
+/* HUD Overlay - Terminator targeting interface */
+.hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.hud-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--terminal-red);
+  opacity: 0.6;
+}
+
+.hud-top-left {
+  top: 20px;
+  left: 20px;
+  border-right: none;
+  border-bottom: none;
+  box-shadow: -2px -2px 8px rgba(255, 0, 0, 0.3);
+}
+
+.hud-top-right {
+  top: 20px;
+  right: 20px;
+  border-left: none;
+  border-bottom: none;
+  box-shadow: 2px -2px 8px rgba(255, 0, 0, 0.3);
+}
+
+.hud-bottom-left {
+  bottom: 20px;
+  left: 20px;
+  border-right: none;
+  border-top: none;
+  box-shadow: -2px 2px 8px rgba(255, 0, 0, 0.3);
+}
+
+.hud-bottom-right {
+  bottom: 20px;
+  right: 20px;
+  border-left: none;
+  border-top: none;
+  box-shadow: 2px 2px 8px rgba(255, 0, 0, 0.3);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .terminal-header {
-    padding: 10px 12px;
+    padding: 10px 14px;
     font-size: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   
   .terminal-title {
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 2px;
+  }
+  
+  .terminal-status {
+    font-size: 10px;
+    padding: 3px 8px;
   }
   
   .terminal-date {
@@ -329,13 +508,48 @@ body {
   
   .terminal-body {
     padding: 16px;
-    font-size: 12px;
+    font-size: 11px;
   }
   
   .terminal-prompt {
-    min-width: 60px;
+    min-width: 55px;
+  }
+
+  .hud-corner {
+    width: 30px;
+    height: 30px;
+  }
+
+  .hud-top-left,
+  .hud-top-right {
+    top: 15px;
+  }
+
+  .hud-bottom-left,
+  .hud-bottom-right {
+    bottom: 15px;
+  }
+
+  .hud-top-left,
+  .hud-bottom-left {
+    left: 15px;
+  }
+
+  .hud-top-right,
+  .hud-bottom-right {
+    right: 15px;
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
