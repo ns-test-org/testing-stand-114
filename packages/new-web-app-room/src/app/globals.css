@@ -1,22 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --terminal-green: #00ff00;
+  --terminal-amber: #ffaa00;
+  --terminal-red: #ff0000;
+  --terminal-cyan: #00ffff;
+  --terminal-bg: #000000;
+  --terminal-border: #00ff00;
 }
 
 /* Non-scroll and full-height baseline */
@@ -26,124 +16,241 @@ html, body {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #000000;
+  color: #00ff00;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-/* Enhanced animated aurora gradient layers - 25% more intense */
-.bg-aurora-layer-1 {
-  background:
-    radial-gradient(1000px 800px at 10% 20%, rgba(120, 73, 239, 0.375), transparent 50%),
-    radial-gradient(1000px 800px at 90% 80%, rgba(50, 108, 216, 0.375), transparent 50%),
-    linear-gradient(180deg, #0b0b12 0%, #0a0a0a 60%, #0b0b12 100%);
-  animation: auroraFloat1 20s ease-in-out infinite alternate;
+/* 80s Terminal Container */
+.terminal-container {
+  background: var(--terminal-bg);
+  border: 3px solid var(--terminal-border);
+  border-radius: 0;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 0, 0.3),
+    inset 0 0 100px rgba(0, 255, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
-.bg-aurora-layer-2 {
-  background:
-    radial-gradient(900px 700px at 70% 30%, rgba(119, 167, 255, 0.3125), transparent 45%),
-    radial-gradient(900px 700px at 30% 70%, rgba(120, 73, 239, 0.25), transparent 45%);
-  animation: auroraFloat2 15s ease-in-out infinite alternate;
-  opacity: 1;
+/* Scanline effect */
+.terminal-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.3) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 10;
+  animation: scanline 8s linear infinite;
 }
 
-.bg-aurora-layer-3 {
-  background:
-    radial-gradient(1200px 900px at 50% 50%, rgba(50, 108, 216, 0.1875), transparent 60%);
-  animation: auroraFloat3 25s ease-in-out infinite alternate;
-  opacity: 0.75;
+/* CRT flicker effect */
+.terminal-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 255, 0, 0.02);
+  pointer-events: none;
+  z-index: 9;
+  animation: flicker 0.15s infinite;
 }
 
-/* Floating particles overlay - 25% more intense */
-.bg-particles {
-  background-image: 
-    radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.375), transparent),
-    radial-gradient(2px 2px at 60% 70%, rgba(120, 73, 239, 0.5), transparent),
-    radial-gradient(1px 1px at 50% 50%, rgba(50, 108, 216, 0.375), transparent),
-    radial-gradient(1px 1px at 80% 10%, rgba(119, 167, 255, 0.5), transparent),
-    radial-gradient(2px 2px at 40% 90%, rgba(255, 255, 255, 0.25), transparent);
-  background-size: 200% 200%;
-  animation: particlesFloat 30s linear infinite;
-  opacity: 0.75;
-}
-
-@keyframes auroraFloat1 {
+@keyframes scanline {
   0% {
-    filter: hue-rotate(0deg) saturate(1);
-    transform: scale(1) translate(0, 0);
-    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.95;
   }
   50% {
-    filter: hue-rotate(18deg) saturate(1.25);
-    transform: scale(1.1) translate(-2.5%, 2.5%);
     opacity: 1;
   }
   100% {
-    filter: hue-rotate(30deg) saturate(1.35);
-    transform: scale(1.12) translate(2.5%, -2.5%);
-    opacity: 1;
+    opacity: 0.95;
   }
 }
 
-@keyframes auroraFloat2 {
-  0% {
-    transform: scale(1) translate(0, 0) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.06) translate(3.75%, -3.75%) rotate(2.5deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.12) translate(-3.75%, 3.75%) rotate(-2.5deg);
-    opacity: 1;
-  }
+/* Terminal Header */
+.terminal-header {
+  background: rgba(0, 255, 0, 0.1);
+  border-bottom: 2px solid var(--terminal-border);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--terminal-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+  letter-spacing: 2px;
 }
 
-@keyframes auroraFloat3 {
-  0% {
-    transform: scale(1) translate(0, 0);
-    opacity: 0.75;
-  }
-  50% {
-    transform: scale(1.14) translate(-2.5%, 2.5%);
-    opacity: 0.85;
-  }
-  100% {
-    transform: scale(1.18) translate(2.5%, -2.5%);
-    opacity: 0.8;
-  }
+.terminal-title {
+  font-size: 16px;
+  letter-spacing: 3px;
 }
 
-@keyframes particlesFloat {
-  0% {
-    background-position: 0% 0%, 100% 100%, 50% 50%, 80% 20%, 30% 80%;
-  }
-  25% {
-    background-position: 25% 25%, 75% 75%, 60% 40%, 60% 40%, 50% 60%;
-  }
-  50% {
-    background-position: 50% 50%, 50% 50%, 70% 30%, 40% 60%, 70% 40%;
-  }
-  75% {
-    background-position: 75% 75%, 25% 25%, 40% 60%, 20% 80%, 60% 20%;
-  }
-  100% {
-    background-position: 100% 100%, 0% 0%, 50% 50%, 80% 20%, 30% 80%;
-  }
+.terminal-date {
+  font-size: 12px;
+  opacity: 0.8;
 }
 
-/* Arrow bounce animation pointing left */
-@keyframes bounce-horizontal {
-  0%, 100% {
+/* Terminal Body */
+.terminal-body {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--terminal-green);
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
+  letter-spacing: 1px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Custom scrollbar */
+.terminal-body::-webkit-scrollbar {
+  width: 12px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+  background: rgba(0, 255, 0, 0.05);
+  border-left: 1px solid var(--terminal-border);
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+  background: var(--terminal-green);
+  border: 2px solid var(--terminal-bg);
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+/* Terminal Lines */
+.terminal-line {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
     transform: translateX(0);
   }
-  50% {
-    transform: translateX(-8px);
+}
+
+.terminal-prompt {
+  font-weight: bold;
+  flex-shrink: 0;
+  min-width: 70px;
+}
+
+.terminal-text {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Different log types */
+.terminal-system .terminal-prompt {
+  color: var(--terminal-cyan);
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+.terminal-success .terminal-prompt {
+  color: var(--terminal-green);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+}
+
+.terminal-info .terminal-prompt {
+  color: var(--terminal-cyan);
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+.terminal-warning .terminal-prompt {
+  color: var(--terminal-amber);
+  text-shadow: 0 0 5px rgba(255, 170, 0, 0.7);
+}
+
+.terminal-warning .terminal-text {
+  color: var(--terminal-amber);
+  text-shadow: 0 0 3px rgba(255, 170, 0, 0.5);
+}
+
+.terminal-error .terminal-prompt {
+  color: var(--terminal-red);
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+}
+
+.terminal-error .terminal-text {
+  color: var(--terminal-red);
+  text-shadow: 0 0 3px rgba(255, 0, 0, 0.5);
+}
+
+/* Blinking cursor */
+.terminal-cursor {
+  display: inline-block;
+  background: var(--terminal-green);
+  color: var(--terminal-bg);
+  animation: blink 1.06s step-end infinite;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
   }
 }
 
-.animate-bounce-horizontal {
-  animation: bounce-horizontal 1.5s ease-in-out infinite;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .terminal-header {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  
+  .terminal-title {
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  
+  .terminal-date {
+    font-size: 10px;
+  }
+  
+  .terminal-body {
+    padding: 16px;
+    font-size: 12px;
+  }
+  
+  .terminal-prompt {
+    min-width: 60px;
+  }
 }
+
