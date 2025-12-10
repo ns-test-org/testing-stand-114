@@ -238,6 +238,79 @@ body {
   }
 }
 
+/* Combat Static Interference Effect */
+.static-interference {
+  animation: staticGlitch 0.15s steps(2, end) infinite;
+}
+
+.static-interference::before {
+  animation: staticScanline 0.08s linear infinite;
+}
+
+.static-interference::after {
+  background: rgba(255, 0, 0, 0.15);
+  animation: staticFlicker 0.05s infinite;
+}
+
+.static-interference .terminal-body {
+  animation: staticShake 0.1s infinite;
+}
+
+@keyframes staticGlitch {
+  0% {
+    transform: translate(0);
+    filter: brightness(1.2) contrast(1.3);
+  }
+  25% {
+    transform: translate(-2px, 2px);
+    filter: brightness(0.8) contrast(1.5);
+  }
+  50% {
+    transform: translate(2px, -2px);
+    filter: brightness(1.4) contrast(1.2);
+  }
+  75% {
+    transform: translate(-1px, -1px);
+    filter: brightness(0.9) contrast(1.4);
+  }
+  100% {
+    transform: translate(1px, 1px);
+    filter: brightness(1.1) contrast(1.3);
+  }
+}
+
+@keyframes staticScanline {
+  0% {
+    background-position: 0 0;
+    opacity: 0.8;
+  }
+  100% {
+    background-position: 0 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes staticFlicker {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes staticShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .terminal-header {
@@ -263,6 +336,7 @@ body {
     min-width: 60px;
   }
 }
+
 
 
 

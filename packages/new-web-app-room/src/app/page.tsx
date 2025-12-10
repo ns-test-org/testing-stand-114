@@ -38,6 +38,7 @@ export default function Terminal() {
   const [logs, setLogs] = useState<Array<{ type: string; text: string; id: number }>>([]);
   const [currentLogIndex, setCurrentLogIndex] = useState(0);
   const [cursorVisible, setCursorVisible] = useState(true);
+  const [staticActive, setStaticActive] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
 
   // Add logs one by one
@@ -74,9 +75,26 @@ export default function Terminal() {
     }
   }, [logs]);
 
+  // Random static interference effect (combat scenes)
+  useEffect(() => {
+    const triggerStatic = () => {
+      setStaticActive(true);
+      setTimeout(() => setStaticActive(false), 150 + Math.random() * 200);
+    };
+
+    // Trigger static randomly every 5-15 seconds
+    const interval = setInterval(() => {
+      if (Math.random() > 0.5) {
+        triggerStatic();
+      }
+    }, 5000 + Math.random() * 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="h-[100dvh] w-full bg-black flex items-center justify-center p-4 md:p-8">
-      <div className="w-full max-w-5xl h-full max-h-[800px] terminal-container">
+      <div className={`w-full max-w-5xl h-full max-h-[800px] terminal-container ${staticActive ? 'static-interference' : ''}`}>
         {/* Terminal header */}
         <div className="terminal-header">
           <div className="flex items-center gap-2">
@@ -124,6 +142,9 @@ export default function Terminal() {
     </div>
   );
 }
+
+
+
 
 
 
