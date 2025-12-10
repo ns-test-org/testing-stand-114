@@ -1,0 +1,347 @@
+@import "tailwindcss";
+
+:root {
+  --terminal-red: #ff0000;
+  --terminal-red-bright: #ff3333;
+  --terminal-red-dim: #cc0000;
+  --terminal-amber: #ff6600;
+  --terminal-bg: #000000;
+  --terminal-border: #ff0000;
+}
+
+/* Non-scroll and full-height baseline */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: #000000;
+  color: #ff0000;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Terminator Terminal Container */
+.terminal-container {
+  background: var(--terminal-bg);
+  border: 3px solid var(--terminal-border);
+  border-radius: 0;
+  box-shadow: 
+    0 0 30px rgba(255, 0, 0, 0.4),
+    inset 0 0 100px rgba(255, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Scanline effect */
+.terminal-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.4) 50%
+  );
+  background-size: 100% 3px;
+  pointer-events: none;
+  z-index: 10;
+  animation: scanline 6s linear infinite;
+}
+
+/* CRT flicker effect */
+.terminal-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 0, 0, 0.03);
+  pointer-events: none;
+  z-index: 9;
+  animation: flicker 0.12s infinite;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.95;
+  }
+}
+
+/* Terminal Header */
+.terminal-header {
+  background: rgba(255, 0, 0, 0.1);
+  border-bottom: 2px solid var(--terminal-border);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--terminal-red);
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+  letter-spacing: 2px;
+}
+
+.terminal-title {
+  font-size: 16px;
+  letter-spacing: 3px;
+}
+
+.terminal-date {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Terminal Body */
+.terminal-body {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--terminal-red);
+  text-shadow: 0 0 4px rgba(255, 0, 0, 0.6);
+  letter-spacing: 1px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Custom scrollbar */
+.terminal-body::-webkit-scrollbar {
+  width: 12px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+  background: rgba(255, 0, 0, 0.05);
+  border-left: 1px solid var(--terminal-border);
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+  background: var(--terminal-red);
+  border: 2px solid var(--terminal-bg);
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+/* Terminal Lines */
+.terminal-line {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.terminal-prompt {
+  font-weight: bold;
+  flex-shrink: 0;
+  min-width: 70px;
+}
+
+.terminal-text {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Different log types - Terminator red monochrome */
+.terminal-system .terminal-prompt {
+  color: var(--terminal-red-bright);
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
+}
+
+.terminal-success .terminal-prompt {
+  color: var(--terminal-red);
+  text-shadow: 0 0 6px rgba(255, 0, 0, 0.7);
+}
+
+.terminal-info .terminal-prompt {
+  color: var(--terminal-red);
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.6);
+}
+
+.terminal-warning .terminal-prompt {
+  color: var(--terminal-amber);
+  text-shadow: 0 0 7px rgba(255, 102, 0, 0.8);
+}
+
+.terminal-warning .terminal-text {
+  color: var(--terminal-amber);
+  text-shadow: 0 0 4px rgba(255, 102, 0, 0.6);
+}
+
+.terminal-error .terminal-prompt {
+  color: var(--terminal-red-bright);
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.9);
+}
+
+.terminal-error .terminal-text {
+  color: var(--terminal-red-bright);
+  text-shadow: 0 0 5px rgba(255, 51, 51, 0.7);
+}
+
+.terminal-data .terminal-prompt {
+  color: var(--terminal-red-dim);
+  text-shadow: 0 0 4px rgba(204, 0, 0, 0.6);
+}
+
+.terminal-data .terminal-text {
+  color: var(--terminal-red-dim);
+  text-shadow: 0 0 3px rgba(204, 0, 0, 0.5);
+}
+
+/* Blinking cursor */
+.terminal-cursor {
+  display: inline-block;
+  background: var(--terminal-red);
+  color: var(--terminal-bg);
+  animation: blink 1.06s step-end infinite;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Combat Static Interference Effect */
+.static-interference {
+  animation: staticGlitch 0.15s steps(2, end) infinite;
+}
+
+.static-interference::before {
+  animation: staticScanline 0.08s linear infinite;
+}
+
+.static-interference::after {
+  background: rgba(255, 0, 0, 0.15);
+  animation: staticFlicker 0.05s infinite;
+}
+
+.static-interference .terminal-body {
+  animation: staticShake 0.1s infinite;
+}
+
+@keyframes staticGlitch {
+  0% {
+    transform: translate(0);
+    filter: brightness(1.2) contrast(1.3);
+  }
+  25% {
+    transform: translate(-2px, 2px);
+    filter: brightness(0.8) contrast(1.5);
+  }
+  50% {
+    transform: translate(2px, -2px);
+    filter: brightness(1.4) contrast(1.2);
+  }
+  75% {
+    transform: translate(-1px, -1px);
+    filter: brightness(0.9) contrast(1.4);
+  }
+  100% {
+    transform: translate(1px, 1px);
+    filter: brightness(1.1) contrast(1.3);
+  }
+}
+
+@keyframes staticScanline {
+  0% {
+    background-position: 0 0;
+    opacity: 0.8;
+  }
+  100% {
+    background-position: 0 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes staticFlicker {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes staticShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .terminal-header {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  
+  .terminal-title {
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  
+  .terminal-date {
+    font-size: 10px;
+  }
+  
+  .terminal-body {
+    padding: 16px;
+    font-size: 12px;
+  }
+  
+  .terminal-prompt {
+    min-width: 60px;
+  }
+}
+
+
+
+
+
+
+
+
+
